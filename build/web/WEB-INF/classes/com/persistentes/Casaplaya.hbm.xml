@@ -1,0 +1,42 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+"http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+<!-- Generated 23/07/2015 03:35:00 PM by Hibernate Tools 4.3.1 -->
+<hibernate-mapping>
+    <class name="com.persistentes.Casaplaya" table="casaplaya" catalog="BDOO" optimistic-lock="version">
+        <id name="codigo" type="string">
+            <column name="codigo" length="10" />
+            <generator class="assigned" />
+        </id>
+        <many-to-one name="propietario" class="com.persistentes.Propietario" fetch="select">
+            <column name="idpropietario" length="10" />
+        </many-to-one>
+        <property name="poblacion" type="string">
+            <column name="poblacion" length="100" />
+        </property>
+        <property name="nhabitaciones" type="java.lang.Integer">
+            <column name="nhabitaciones" />
+        </property>
+        <property name="nbanos" type="java.lang.Integer">
+            <column name="nbanos" />
+        </property>
+        <property name="ncocinas" type="java.lang.Integer">
+            <column name="ncocinas" />
+        </property>
+        <property name="ncomedores" type="java.lang.Integer">
+            <column name="ncomedores" />
+        </property>
+        <property name="nestacionamientos" type="java.lang.Integer">
+            <column name="nestacionamientos" />
+        </property>
+        <property name="estadoactual" type="java.lang.Boolean">
+            <column name="estadoactual" />
+        </property>
+        <set name="paquetes" table="paquete" inverse="true" lazy="true" fetch="select">
+            <key>
+                <column name="idcasaplaya" length="10" />
+            </key>
+            <one-to-many class="com.persistentes.Paquete" />
+        </set>
+    </class>
+</hibernate-mapping>

@@ -1,0 +1,45 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+"http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+<!-- Generated 23/07/2015 03:35:00 PM by Hibernate Tools 4.3.1 -->
+<hibernate-mapping>
+    <class name="com.persistentes.Paquete" table="paquete" catalog="BDOO" optimistic-lock="version">
+        <id name="codigo" type="string">
+            <column name="codigo" length="10" />
+            <generator class="assigned" />
+        </id>
+        <many-to-one name="casaplaya" class="com.persistentes.Casaplaya" fetch="select">
+            <column name="idcasaplaya" length="10" />
+        </many-to-one>
+        <property name="fechainicio" type="date">
+            <column name="fechainicio" length="10" not-null="true" />
+        </property>
+        <property name="fechafinal" type="date">
+            <column name="fechafinal" length="10" not-null="true" />
+        </property>
+        <property name="precio" type="java.lang.Float">
+            <column name="precio" precision="12" scale="0" />
+        </property>
+        <property name="estados" type="java.lang.Integer">
+            <column name="estados" />
+        </property>
+        <set name="pagos" table="pago" inverse="true" lazy="true" fetch="select">
+            <key>
+                <column name="idpaquete" length="10" />
+            </key>
+            <one-to-many class="com.persistentes.Pago" />
+        </set>
+        <set name="reservas" table="reserva" inverse="true" lazy="true" fetch="select">
+            <key>
+                <column name="idpaquete" length="10" />
+            </key>
+            <one-to-many class="com.persistentes.Reserva" />
+        </set>
+        <set name="clientes" table="cliente" inverse="true" lazy="true" fetch="select">
+            <key>
+                <column name="idpaquete" length="10" />
+            </key>
+            <one-to-many class="com.persistentes.Cliente" />
+        </set>
+    </class>
+</hibernate-mapping>

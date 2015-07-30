@@ -1,0 +1,24 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+"http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+<!-- Generated 23/07/2015 03:35:00 PM by Hibernate Tools 4.3.1 -->
+<hibernate-mapping>
+    <class name="com.persistentes.Propietario" table="propietario" catalog="BDOO" optimistic-lock="version">
+        <id name="idpersona" type="string">
+            <column name="idpersona" length="10" />
+            <generator class="foreign">
+                <param name="property">persona</param>
+            </generator>
+        </id>
+        <one-to-one name="persona" class="com.persistentes.Persona" constrained="true"></one-to-one>
+        <property name="ncuenta" type="string">
+            <column name="ncuenta" length="50" />
+        </property>
+        <set name="casaplayas" table="casaplaya" inverse="true" lazy="true" fetch="select">
+            <key>
+                <column name="idpropietario" length="10" />
+            </key>
+            <one-to-many class="com.persistentes.Casaplaya" />
+        </set>
+    </class>
+</hibernate-mapping>

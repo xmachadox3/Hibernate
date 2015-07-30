@@ -1,0 +1,18 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+"http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+<!-- Generated 23/07/2015 03:35:00 PM by Hibernate Tools 4.3.1 -->
+<hibernate-mapping>
+    <class name="com.persistentes.Pago" table="pago" catalog="BDOO" optimistic-lock="version">
+        <id name="codigo" type="string">
+            <column name="codigo" length="10" />
+            <generator class="assigned" />
+        </id>
+        <many-to-one name="cliente" class="com.persistentes.Cliente" fetch="select">
+            <column name="idcliente" length="10" />
+        </many-to-one>
+        <many-to-one name="paquete" class="com.persistentes.Paquete" fetch="select">
+            <column name="idpaquete" length="10" />
+        </many-to-one>
+    </class>
+</hibernate-mapping>

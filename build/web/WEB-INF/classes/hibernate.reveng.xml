@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE hibernate-reverse-engineering PUBLIC "-//Hibernate/Hibernate Reverse Engineering DTD 3.0//EN" "http://hibernate.sourceforge.net/hibernate-reverse-engineering-3.0.dtd">
+<hibernate-reverse-engineering>
+  <schema-selection match-catalog="BDOO"/>
+  <table-filter match-name="reserva"/>
+  <table-filter match-name="persona"/>
+  <table-filter match-name="pago"/>
+  <table-filter match-name="cliente"/>
+  <table-filter match-name="propietario"/>
+  <table-filter match-name="paquete"/>
+  <table-filter match-name="casaplaya"/>
+</hibernate-reverse-engineering>

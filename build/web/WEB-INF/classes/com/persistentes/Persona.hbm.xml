@@ -1,0 +1,29 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+"http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+<!-- Generated 23/07/2015 03:35:00 PM by Hibernate Tools 4.3.1 -->
+<hibernate-mapping>
+    <class name="com.persistentes.Persona" table="persona" catalog="BDOO" optimistic-lock="version">
+        <id name="cedula" type="string">
+            <column name="cedula" length="10" />
+            <generator class="assigned" />
+        </id>
+        <property name="nombre" type="string">
+            <column name="nombre" length="50" />
+        </property>
+        <property name="apellido" type="string">
+            <column name="apellido" length="50" />
+        </property>
+        <property name="telefono" type="string">
+            <column name="telefono" length="15" />
+        </property>
+        <property name="clave" type="string">
+            <column name="clave" length="25" />
+        </property>
+        <property name="login" type="string">
+            <column name="login" length="25" />
+        </property>
+        <one-to-one name="cliente" class="com.persistentes.Cliente"></one-to-one>
+        <one-to-one name="propietario" class="com.persistentes.Propietario"></one-to-one>
+    </class>
+</hibernate-mapping>
