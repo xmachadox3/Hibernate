@@ -266,49 +266,7 @@
                     <br>
                     <br>
                     <div class="clearfix"></div>
-                        <div class="container">
-                            <div class="row">
-                                <div class="col-lg-12">
-                                    <form class="form-inline" action="PasarIndex" method="post">
-  					<div class="form-group">
-                                            <label for="exampleInputName2">Poblacion</label>
-                                            <%
-                                                try{
-                                                    SessionFactory sesion = NewHibernateUtil.getSessionFactory();
-                                                    Session session1;
-                                                    session1 = sesion.openSession();
-                                                    Transaction tx = session1.beginTransaction();                                
-                                                    String hql = "FROM Casaplaya " ;
-                            
-                                                    Query query = session1.createQuery(hql);
-                                                    System.out.println(query.list().size());
-                                                    Iterator<Casaplaya> resultCasaPlaya =  query.iterate();
-                                                    Casaplaya t;
-                                                    
-      					%>
-    					<select class="form-control" name="bpoblacion">
-    						<option></option>
-	    					<%while(resultCasaPlaya.hasNext()){ 
-	      						t = resultCasaPlaya.next();
-	      					%>
-	  							<option><%= t.getPoblacion() %></option>
-	  							
-	  						<%
-      						}      					
-      					}catch(Exception e){
-      					%><%="Error" %><%
-      					}
-      				%>
-						</select>
-  					</div>
-  					<div class="form-group">
-    					<label for="exampleInputEmail2">Codigo</label>
-    					<input type="text" class="form-control" id="exampleInputEmail2" placeholder="" name="codigo">
-  					</div>
-  					<button type="submit" class="btn btn-default">Buscar</button>
-				</form>
-      		</div>
-      	</div>
+                     
       		<div class="row">
       			<div class="col-lg-12">
       				 
@@ -331,7 +289,7 @@
                                 session1 = sesion.openSession();
                                 Transaction tx = session1.beginTransaction();
                                 
-                                String hql = "FROM Casaplaya CP ";
+                                String hql = "FROM Casaplaya CP where CP.codigo = \'"  + request.getAttribute("codigo") +"\'";
                                 Query query = session1.createQuery(hql);
                                 Iterator<Casaplaya> resultCasaPlaya = query.list().iterator();
       					

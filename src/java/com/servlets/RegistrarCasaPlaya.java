@@ -75,7 +75,9 @@ public class RegistrarCasaPlaya extends HttpServlet {
                 Propietario propietario = usuario.getPropietario();
                 System.out.println(propietario.toString());
                 Casaplaya casaplaya = new Casaplaya(codigo,propietario,poblacion,nhabitaciones,nbanos,ncocinas,ncomedores,nestacionamientos,true,null);
-               
+                Set<Casaplaya> x = propietario.getCasaplayas();
+                x.add(casaplaya);
+                propietario.setCasaplayas(x);
                 session.save(casaplaya);
                 session.save(propietario);
         

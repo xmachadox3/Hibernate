@@ -1,3 +1,5 @@
+<%@page import="com.persistentes.Paquete"%>
+<%@page import="java.text.SimpleDateFormat"%>
 <%@page import="com.persistentes.Casaplaya"%>
 <%@page import="java.util.Iterator"%>
 <%@page import="java.util.List"%>
@@ -118,7 +120,7 @@
       				<th>#-Estacionamientos</th>
                                 <th>#-Habitaciones</th>
       				<th>#-Poblacion</th>
-      				<th>#-Propietario</th>
+      				
                             </thead>
                         <%
                             try{
@@ -130,7 +132,8 @@
                                 String hql = "FROM Casaplaya CP where CP.propietario.persona.login = " + "\'" + Usuario + "\'" ;
                                 Query query = session1.createQuery(hql);
                                 Iterator<Casaplaya> resultCasaPlaya = query.list().iterator();
-      					
+      				tx.commit();
+                                session1.close();
       					
       				%>
       				<tbody>
@@ -146,7 +149,7 @@
       						<td><%= t.getNestacionamientos() %></td>
       						<td><%= t.getNhabitaciones() %></td>
       						<td><%= t.getPoblacion()  %></td>
-      						<td><%= t.getPropietario().getPersona().getNombre() %></td>
+      						
       					</tr>
       				<%
                                     }      					
@@ -186,6 +189,63 @@
             		<button type="submit" class="btn btn-success" name="registrarpaquetecasaplaya"  value="registrarcasaplaya">Guardar</button>
                     </form>
       		</div>
+                <div class="col-9">
+                    <div class="col-lg-9">
+                    <h2 class="text-center">Paquete de las Casas de Playa</h2> 
+                    <table class="table table-hover">
+                        <thead>
+                            <th>Codigo Casa</th>
+                            <th>Codigo Paquete</th>
+                            <th>Fecha Inicial</th>
+                            <th>Fecha Final</th>
+                            <th>Precio</th>
+      			  
+                        </thead>
+                    <%
+                        try{
+                            SessionFactory sesion = NewHibernateUtil.getSessionFactory();
+                            Session session1;
+                            session1 = sesion.openSession();
+                            Transaction tx = session1.beginTransaction();                                
+                            String hql = "FROM Casaplaya CP where CP.propietario.persona.login = " + "\'" + Usuario + "\'" ;
+                            
+                            Query query = session1.createQuery(hql);
+                            System.out.println(query.list().size());
+                            Iterator<Casaplaya> resultCasaPlaya =  query.iterate();
+                            Casaplaya t;
+                            SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy"); %>
+      				
+                        <tbody>
+      				<%while(resultCasaPlaya.hasNext()){ 
+      					t = resultCasaPlaya.next();
+                                        hql = "FROM Paquete P where P.casaplaya.codigo = " + "\'" + t.getCodigo() + "\'" ;
+                                        query = session1.createQuery(hql);
+      					Iterator<Paquete> resultPaquete   = query.iterate();
+                                        Paquete p;
+      					while(resultPaquete.hasNext()){
+      						p = resultPaquete.next();
+      				%>
+      					<tr>
+      						<td><%= t.getCodigo() %></td>
+      						<td><%= p.getCodigo() %></td>
+      						<td><%= formatter.format(p.getFechainicio()) %></td>
+      						<td><%= formatter.format(p.getFechafinal()) %></td>
+      						<td><%= p.getPrecio() %></td>      						
+      						
+      					</tr>
+      				<%
+      				}
+      					}
+                                }catch(Exception e){
+      					%><%=e.getCause() %><%
+      				}
+      					
+      				%>
+      				</tbody>
+  				</table>
+      		</div>
+      		</div>
+      	</div>
                                 <%}
                                     else {%>
                                     <form class="navbar-form navbar-right" method="post" action="Login" >
@@ -201,23 +261,69 @@
                             </div>
                         </nav>
                     </div> <!-- Header -->
-                        <div class="clearfix"></div>
                     <br>
                     <br>
-                     <div class="col-lg-12">
-                    <h2 class="text-center">Casas de Playa Registradas</h2> 
-                       <table class="table table-hover">
-      				<thead>
-      				<th>Codigo</th>
-      				<th>EstadoActual</th>
-      				<th>#-Banos</th>
-      				<th>#-Cocinas</th>
-      				<th>#-Comedores</th>
-      				<th>#-Estacionamientos</th>
-                                <th>#-Habitaciones</th>
-      				<th>#-Poblacion</th>
-      				<th>#-Propietario</th>
-                            </thead>
+                    <br>
+                    <br>
+                    <div class="clearfix"></div>
+                        <div class="container">
+                            <div class="row">
+                                <div class="col-lg-12">
+                                    <form class="form-inline" action="PasarIndex" method="post">
+  					<div class="form-group">
+                                            <label for="exampleInputName2">Poblacion</label>
+                                            <%
+                                                try{
+                                                    SessionFactory sesion = NewHibernateUtil.getSessionFactory();
+                                                    Session session1;
+                                                    session1 = sesion.openSession();
+                                                    Transaction tx = session1.beginTransaction();                                
+                                                    String hql = "FROM Casaplaya " ;
+                            
+                                                    Query query = session1.createQuery(hql);
+                                                    System.out.println(query.list().size());
+                                                    Iterator<Casaplaya> resultCasaPlaya =  query.iterate();
+                                                    Casaplaya t;
+                                                    
+      					%>
+    					<select class="form-control" name="bpoblacion">
+    						<option></option>
+	    					<%while(resultCasaPlaya.hasNext()){ 
+	      						t = resultCasaPlaya.next();
+	      					%>
+	  							<option><%= t.getPoblacion() %></option>
+	  							
+	  						<%
+      						}      					
+      					}catch(Exception e){
+      					%><%="Error" %><%
+      					}
+      				%>
+						</select>
+  					</div>
+  					<div class="form-group">
+    					<label for="exampleInputEmail2">Codigo</label>
+    					<input type="text" class="form-control" id="exampleInputEmail2" placeholder="" name="codigo">
+  					</div>
+  					<button type="submit" class="btn btn-default">Buscar</button>
+				</form>
+      		</div>
+      	</div>
+      		<div class="row">
+      			<div class="col-lg-12">
+      				 
+      				<table class="table table-hover">
+      					<thead>
+      						<th>Codigo</th>
+      						<th>#-Banos</th>
+      						<th>#-Cocinas</th>
+      						<th>#-Comedores</th>
+      						<th>#-Estacionamientos</th>
+      						<th>#-Habitaciones</th>
+      						<th>#-Poblacion</th>
+      						<th>#-Propietario</th>
+      						<th> Opcion </th>
+      					</thead>
                         <%
                             try{
                                 SessionFactory sesion = NewHibernateUtil.getSessionFactory();
@@ -252,7 +358,7 @@
                                             <input type="hidden" name="poblacion" value = "<%=t.getPoblacion() %>">
                                             <td><%= t.getPoblacion()  %></td>
                                             <input type="hidden" name="propietario" value = "<%=t.getPropietario().getPersona().getNombre() %>">
-                                            <td><%= t.getPropietario().getIdpersona() %></td>
+                                            <td><%= t.getPropietario().getPersona().getNombre() %></td>
                                             <td><button type="submit" class="btn btn-info">Ver Paquetes</button></td>
       					</tr>
                                         </form>
