@@ -17,8 +17,8 @@ import javax.servlet.http.HttpServletResponse;
  *
  * @author jeny
  */
-@WebServlet(name = "PasarIndex", urlPatterns = {"/PasarIndex"})
-public class PasarIndex extends HttpServlet {
+@WebServlet(name = "VerPaquete", urlPatterns = {"/VerPaquete"})
+public class VerPaquete extends HttpServlet {
 
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
@@ -31,23 +31,23 @@ public class PasarIndex extends HttpServlet {
      */
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-                String Poblacion = request.getParameter("bpoblacion");
-		String codigo    = request.getParameter("codigo");
-		if(Poblacion.equals("")){
-			Poblacion = null;
-		}
-		if(codigo.equals("")){
-			codigo = null;
-		}
-		if(Poblacion == null && codigo == null){
-			String mensaje = "Ha ocurrido un error, no se selecciono ninguna opcion";
-			request.setAttribute("mensaje", mensaje);
-			request.getRequestDispatcher("mensaje.jsp").forward(request, response);
-		}else{
-			request.setAttribute("poblacion", Poblacion);
-			request.setAttribute("codigo", codigo);
-			request.getRequestDispatcher("ver1.jsp").forward(request, response);
-		}
+            String codigocasa 	= request.getParameter("codigocasa");	
+		String finicial 	= request.getParameter("finicial");
+		String ffinal		= request.getParameter("ffinal");
+			
+		
+		request.setAttribute("codigocasa", codigocasa);
+		if(finicial != "")
+			request.setAttribute("finicial", finicial);
+		else
+			request.setAttribute("finicial", null);
+		if(ffinal != "")
+			request.setAttribute("ffinal", ffinal);
+		else
+			request.setAttribute("ffinal", null);
+		
+		
+		request.getRequestDispatcher("paquete.jsp").forward(request, response);
     }
 
     // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">

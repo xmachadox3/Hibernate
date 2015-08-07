@@ -1,3 +1,7 @@
+<%@page import="com.persistentes.Reserva"%>
+<%@page import="com.persistentes.Cliente"%>
+<%@page import="com.persistentes.Persona"%>
+<%@page import="com.persistentes.Propietario"%>
 <%@page import="com.persistentes.Paquete"%>
 <%@page import="java.text.SimpleDateFormat"%>
 <%@page import="com.persistentes.Casaplaya"%>
@@ -210,17 +214,18 @@
                             String hql = "FROM Casaplaya CP where CP.propietario.persona.login = " + "\'" + Usuario + "\'" ;
                             
                             Query query = session1.createQuery(hql);
-                            System.out.println(query.list().size());
-                            Iterator<Casaplaya> resultCasaPlaya =  query.iterate();
+                            
+                            Iterator<Casaplaya> resultCasaPlaya =  query.list().iterator();
+                             
                             Casaplaya t;
                             SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy"); %>
       				
                         <tbody>
       				<%while(resultCasaPlaya.hasNext()){ 
       					t = resultCasaPlaya.next();
-                                        hql = "FROM Paquete P where P.casaplaya.codigo = " + "\'" + t.getCodigo() + "\'" ;
-                                        query = session1.createQuery(hql);
-      					Iterator<Paquete> resultPaquete   = query.iterate();
+                                        
+                                    
+      					Iterator<Paquete> resultPaquete   = t.getPaquetes().iterator();
                                         Paquete p;
       					while(resultPaquete.hasNext()){
       						p = resultPaquete.next();
@@ -228,8 +233,8 @@
       					<tr>
       						<td><%= t.getCodigo() %></td>
       						<td><%= p.getCodigo() %></td>
-      						<td><%= formatter.format(p.getFechainicio()) %></td>
-      						<td><%= formatter.format(p.getFechafinal()) %></td>
+      						<td><%= formatter.format(p.getFechainicio())%></td>
+      						<td><%= formatter.format(p.getFechafinal())  %></td>
       						<td><%= p.getPrecio() %></td>      						
       						
       					</tr>
@@ -237,7 +242,7 @@
       				}
       					}
                                 }catch(Exception e){
-      					%><%=e.getCause() %><%
+      					%><%= "error" %><%
       				}
       					
       				%>
@@ -245,6 +250,79 @@
   				</table>
       		</div>
       		</div>
+      	</div>
+        <div class="row">
+      		<div class="col-lg-4">
+      			<h4>Casas de Playas Reservadas</h4>
+      			<table class="table table-hover">
+      				<thead>
+      					<th>C.Casa</th>
+      					
+      					<th>F.Inicial</th>
+      					<th>F.Final</th>
+      					<th>Precio</th>
+      					
+      					<th>C.Cliente</th>
+      					<th>N.Cliente</th>
+      				</thead>
+      				<%
+                                    try{
+                                        SessionFactory sesion = NewHibernateUtil.getSessionFactory();
+                                        Session session1;
+                                        session1 = sesion.openSession();
+                                        Transaction tx = session1.beginTransaction();                                
+                                        String hql = "FROM Persona P where P.login = " + "\'" + Usuario + "\'" ;
+                            
+                                        Query query = session1.createQuery(hql);
+      					Iterator<Persona> resultPropietario = query.list().iterator();
+  					Persona x = null;
+  					boolean flagsPropietario = false;
+  					while(resultPropietario.hasNext()){
+                                            x = resultPropietario.next();
+                                            if(x.getLogin().equals(Usuario)){
+                                                flagsPropietario = true;
+                                                break;
+                                            }				
+                                        }
+                                        Iterator<Casaplaya> resultCasaPlaya =  x.getPropietario().getCasaplayas().iterator();
+  					Casaplaya t = null;
+  					Paquete p = null;      				
+      				%>
+      				<%SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy"); %>
+      				<tbody>
+      				<%while(resultCasaPlaya.hasNext()){ 
+      					t = resultCasaPlaya.next();
+      					Iterator<Paquete>   resultPaquete   = t.getPaquetes().iterator();
+      					while(resultPaquete.hasNext()){
+      						p = resultPaquete.next();
+                                                Iterator<Reserva> resultReserva = p.getReservas().iterator();
+                                                while(resultReserva.hasNext()){
+                                                    Reserva r = resultReserva.next();
+      				%>
+      					<tr>
+      						<td><%= t.getCodigo() %></td>
+      						
+      						<td><%= formatter.format(p.getFechainicio()) %></td>
+      						<td><%= formatter.format(p.getFechafinal()) %></td>
+      						<td><%= p.getPrecio() %></td>      		
+      						
+      						<td><%= r.getCliente().getPersona().getCedula() %></td>
+      						<td><%= r.getCliente().getPersona().getNombre() %></td>			
+      						
+      					</tr>
+      					<%}}
+      					} 
+                                    }catch(Exception e){%>
+                                        <%= e.getCause() %>
+                                        <%
+                                    }
+                                        %>
+      					
+      				</tbody>
+      			</table>
+      		</div>
+        </div>
+      	
       	</div>
                                 <%}
                                     else {%>

@@ -266,22 +266,44 @@
                     <br>
                     <br>
                     <div class="clearfix"></div>
-                     
-      		<div class="row">
-      			<div class="col-lg-12">
-      				 
-      				<table class="table table-hover">
-      					<thead>
-      						<th>Codigo</th>
-      						<th>#-Banos</th>
-      						<th>#-Cocinas</th>
-      						<th>#-Comedores</th>
-      						<th>#-Estacionamientos</th>
-      						<th>#-Habitaciones</th>
-      						<th>#-Poblacion</th>
-      						<th>#-Propietario</th>
-      						<th> Opcion </th>
-      					</thead>
+                       
+      <%String codigocasa 	= (String) request.getAttribute("codigocasa"); %>
+      <%String finicial 		= (String) request.getAttribute("finicial"); %>
+      <%String ffinal 		= (String) request.getAttribute("ffinal"); %>
+                    <div class="row">
+     	<div class="col-lg-12">
+     	<h4 class="text-center">Parametros de Busqueda</h4> 
+     	<form class="form-inline text-center" action="VerPaquete" method="post">
+  					<div class="form-group">
+    					<label for="exampleInputEmail2">Codigo</label>
+    					<input type="text" class="form-control" id="exampleInputEmail2" placeholder="" name="codigocasa" value="<%= request.getParameter("codigocasa")%>">
+  					</div>
+  					<div class="form-group">
+    					<label for="exampleInputEmail2">Dia de Entrada</label>
+    					<input type="text" class="form-control" id="exampleInputEmail2" placeholder="" name="finicial">
+  					</div>
+  					<div class="form-group">
+    					<label for="exampleInputEmail2">Dia de Salida</label>
+    					<input type="text" class="form-control" id="exampleInputEmail2" placeholder="" name="ffinal">
+  					</div>
+  					<button type="submit" class="btn btn-default">Buscar</button>
+				</form>
+			</div>
+			
+			<div class="col-lg-8">
+      		<h4 class="text-center">Paquete de las Casas de Playa</h4> 
+      		
+      			<table class="table table-hover">
+      				<thead>
+      					<th>Codigo Casa</th>
+      					<th>Codigo Paquete</th>
+      					<th>Fecha Inicial</th>
+      					<th>Fecha Final</th>
+      					<th>Precio</th>      				
+      					<th>#-Propietario</th>
+      					<th>#-Cuenta</th>
+      					<th> Reservar </th>
+      				</thead>
                         <%
                             try{
                                 SessionFactory sesion = NewHibernateUtil.getSessionFactory();
@@ -290,49 +312,105 @@
                                 Transaction tx = session1.beginTransaction();
                                 String codigo = (String) request.getAttribute("codigo");
                                 String poblacion = (String) request.getAttribute("poblacion");
-                                String hql = "FROM Casaplaya CP where CP.poblacion = \'"  + poblacion+"\' Or CP.codigo = \'" + codigo + "\'";
+                                String hql = "FROM Casaplaya CP where CP.codigo = \'"  + codigocasa + "\'";
                                 
                                 Query query = session1.createQuery(hql);
                                 Iterator<Casaplaya> resultCasaPlaya = query.list().iterator();
       					
-      					
+      				Casaplaya t = null;
+      				Paquete p = null;	
       				%>
+      				<%SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy"); %>
       				<tbody>
       				<%while(resultCasaPlaya.hasNext()){ 
-      					Casaplaya t = resultCasaPlaya.next();
+      					t = resultCasaPlaya.next();
+      					Iterator<Paquete> resultPaquete = t.getPaquetes().iterator();
+      					if (!resultPaquete.hasNext()){ %>
+  						<script> alert("No hay paquetes disponibles en este momento, para esta casa ")</script>
+  					<%} 
+      					while(resultPaquete.hasNext()){
+      						p = resultPaquete.next();
+      						%>
+      							<form action="RegistrarReserva" method="post">
+      								<input type="hidden" name="codigocasa"    value="<%= t.getCodigo() %>">
+      								<input type="hidden" name="codigopaquete" value="<%= p.getCodigo() %>">
+      								
+      								
+      							
+      						<% 
+      						if((finicial == null) && (ffinal == null)){
       				%>
-      					<form method="post" action="VerPaquete">
-      					<tr>     						
-                                            <input type="hidden" name="codigocasa" value = "<%=t.getCodigo() %>">
-                                            <td><%= t.getCodigo() %></td>
-                                            <input type="hidden" name="nbanos" value = "<%=t.getNbanos() %>">
-                                            <td><%= t.getNbanos() %></td>
-                                            <input type="hidden" name="ncocinas" value = "<%=t.getNcocinas() %>">
-                                            <td><%= t.getNcocinas() %></td>
-                                            <input type="hidden" name="ncomedores" value = "<%=t.getNcomedores() %>">
-                                            <td><%= t.getNcomedores() %></td>
-                                            <input type="hidden" name="nestacionamientos" value = "<%=t.getNestacionamientos() %>">
-                                            <td><%= t.getNestacionamientos() %></td>
-                                            <input type="hidden" name="nhabitaciones" value = "<%=t.getNhabitaciones() %>">
-                                            <td><%= t.getNhabitaciones() %></td>
-                                            <input type="hidden" name="poblacion" value = "<%=t.getPoblacion() %>">
-                                            <td><%= t.getPoblacion()  %></td>
-                                            <input type="hidden" name="propietario" value = "<%=t.getPropietario().getPersona().getNombre() %>">
-                                            <td><%= t.getPropietario().getPersona().getNombre() %></td>
-                                            <td><button type="submit" class="btn btn-info">Ver Paquetes</button></td>
+      					<tr>
+      						<td><%= t.getCodigo() %></td>
+      						<td><%= p.getCodigo() %></td>
+      						<td><%= formatter.format(p.getFechainicio()) %></td>
+      						<td><%= formatter.format(p.getFechafinal()) %></td>
+      						<td><%= p.getPrecio() %></td>      						
+      						<td><%= t.getPropietario().getPersona().getNombre() %></td>
+      						<td><%= t.getPropietario().getNcuenta() %>
+      						<td><button type="submit" class="btn btn-info">Reservar</button><td>
       					</tr>
-                                        </form>
       				<%
-                                    }      					
+      						}
+      						else if((finicial != null) && (ffinal != null)){ 
+      							if(formatter.format(p.getFechainicio()).equals(finicial) && formatter.format(p.getFechafinal()).equals(ffinal)){
+      						%>
+      							
+      							<tr>
+      								<td><%= t.getCodigo() %></td>
+      								<td><%= p.getCodigo() %></td>
+      								<td><%= formatter.format(p.getFechainicio()) %></td>
+      								<td><%= formatter.format(p.getFechafinal()) %></td>
+      								<td><%= p.getPrecio() %></td>      						
+      								<td><%= t.getPropietario().getPersona().getNombre() %></td>
+      								<td><%= t.getPropietario().getNcuenta() %>
+      								<td><button type="submit" class="btn btn-info">Reservar</button><td>
+      							</tr>
+      						<%}
+      						}
+      						
+      				}
+      					}
+      					
       				}catch(Exception e){
       					%><%="Error" %><%
       				}
       				%>
-                       </tb>			
-                            </table>
+      				
+      				</tbody>
+  				</table>
                         </div> 
-                    <br>
+                                <div class="col-lg-4">
+        	<h4 class="text-center">Rellene estos datos para reservar</h4>
+        	
+        		<div class="form-group">
+    				<label>Cedula</label>
+    				<input type="text" class="form-control" placeholder="Cedula" name="cedula" required>
+  				</div>
+  				<div class="form-group">
+    				<label>Nombre</label>
+    				<input type="text" class="form-control" placeholder="Nombre" name="nombre" required>
+  				</div>
+  				<div class="form-group">
+    				<label>Apellido</label>
+    				<input type="text" class="form-control" placeholder="Apellido" name="apellido" required>
+  				</div>
+  				<div class="form-group">
+    				<label>Login del Usuario</label>
+    				<input type="text" class="form-control" placeholder="Login" name="login" required>
+  				</div>
+  				<div class="form-group">
+    				<label>Clave del Usuario</label>
+    				<input type="password" class="form-control" placeholder="Clave" name="clave" required>
+  				</div>
+  				
+  				
+			</form>
+      		</div>
+      		</form>
+      	</div>
+                    
                             <%}%>                                   
-                    </div>
+                    
                 </body>
 </html>

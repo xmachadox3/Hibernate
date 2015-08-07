@@ -217,7 +217,7 @@
       				
                         <tbody>
       				<%while(resultCasaPlaya.hasNext()){ 
-      					t = resultCasaPlaya.next();
+      					t = resultCasaPlaya.next();                                  
                                         hql = "FROM Paquete P where P.casaplaya.codigo = " + "\'" + t.getCodigo() + "\'" ;
                                         query = session1.createQuery(hql);
       					Iterator<Paquete> resultPaquete   = query.iterate();
@@ -288,8 +288,10 @@
                                 Session session1;
                                 session1 = sesion.openSession();
                                 Transaction tx = session1.beginTransaction();
+                                String codigo = (String) request.getAttribute("codigo");
+                                String poblacion = (String) request.getAttribute("poblacion");
+                                String hql = "FROM Casaplaya CP where CP.poblacion = \'"  + poblacion+"\' Or CP.codigo = \'" + codigo + "\'";
                                 
-                                String hql = "FROM Casaplaya CP where CP.codigo = \'"  + request.getAttribute("codigo") +"\'";
                                 Query query = session1.createQuery(hql);
                                 Iterator<Casaplaya> resultCasaPlaya = query.list().iterator();
       					
